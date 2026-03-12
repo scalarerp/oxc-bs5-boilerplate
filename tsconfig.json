@@ -1,0 +1,82 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "paths": {
+      "assets/*": ["./src/assets/*"],
+      "Common/*": ["./src/Common/*"],
+      "controllers/*": ["./src/controllers/*"],
+      "Features/*": ["./src/Features/*"],
+      "localesResources/*": ["./src/localesResources/*"],
+      "main/*": ["./src/main/*"],
+      "services/*": ["./src/services/*"],
+      "store/*": ["./src/store/*"],
+      "router": ["./src/router/index.tsx"],
+      "utils/*": ["./src/utils/*"],
+      "tests/*": ["./src/tests/*"]
+    },
+
+    "target": "es2024",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": false, //todo ver se deve ser true
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": false, //todo ver se deve ser true
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+
+    // //diferencas do antigo - - abaixo
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "jsxImportSource": "react",
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* "downlevelIteration": true, */
+    "preserveSymlinks": false,
+
+    /* Linting */
+    "alwaysStrict": true,
+    "noUncheckedIndexedAccess": false,
+
+    /* others */
+
+    "exactOptionalPropertyTypes": false,
+    "noImplicitThis": true,
+    "noImplicitOverride": true,
+    "removeComments": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "pretty": true
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "**/*.d.cts",
+    "**/*.d.mts",
+    "packages/docs",
+    "vitest.root.mts"
+  ],
+  "include": [
+    "src",
+    "./src",
+    "./dist/types/**/*.ts",
+    "**/*.ts",
+    "**/*.mts",
+    "**/*.cts"
+  ]
+}

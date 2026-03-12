@@ -1,0 +1,54 @@
+{
+  "name": "zerada-oxc",
+  "version": "00.00.01",
+  "private": false,
+  "scripts": {
+    "start": "vite",
+    "build": "pnpm run typecheck && vite build",
+    "test": "oxlint --max-warnings 0 && vitest run",
+    "test-ui": "oxlint --max-warnings 0 && vitest --ui",
+    "clean-and-install": "pnpm clean:node-modules && pnpm clean:dist &&  pnpm i && pnpm start",
+    "clean:node-modules": "npx rimraf --glob **/node_modules",
+    "clean:dist": "npx rimraf --glob **/dist",
+    "prepare": "husky",
+    "format": "oxfmt --write",
+    "lint": "oxlint --type-aware",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/base-64": "^1.0.0",
+    "@types/node": "^22.7.6",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "@vitejs/plugin-react": "^6.0.0",
+    "@vitest/ui": "^4.1.0",
+    "husky": "^9.1.7",
+    "jsdom": "^26.1.0",
+    "lightningcss": "^1.32.0",
+    "lint-staged": "^16.3.1",
+    "oxfmt": "^0.35.0",
+    "oxlint": "^1.50.0",
+    "oxlint-tsgolint": "^0.15.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.0",
+    "vite-plugin-checker": "^0.12.0",
+    "vitest": "^4.1.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "oxfmt --write",
+      "oxlint --type-aware"
+    ]
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
