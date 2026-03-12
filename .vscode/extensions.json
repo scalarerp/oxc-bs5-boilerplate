@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "oxc.oxc-vscode",
+    "eamodio.gitlens",
+    "ms-vscode.vscode-typescript-next",
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-complete-tag",
+    "steoates.autoimport",
+    "formulahendry.auto-rename-tag",
+    "naumovs.color-highlight",
+    "dsznajder.es7-react-js-snippets",
+    "dbaeumer.vscode-eslint",
+    "mhutchie.git-graph",
+    "donjayamanne.githistory",
+    "alefragnani.project-manager"
+  ]
+}

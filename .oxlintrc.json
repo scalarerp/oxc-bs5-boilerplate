@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["unicorn", "typescript", "oxc", "react"],
+
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "unicorn/prefer-set-has": "off", //todo para outra tarefa: revisar unicorn por causa da performance
+    "typescript/no-misused-spread": "off", //todo para outra tarefa: revisar spread por causa da performance
+    "typescript/unbound-method": "off", //todo para outra tarefa: revisar spread por causa da performance
+    "no-unused-expressions": "off", //expressoes com && ou || exemplo :handleChangeAlarms && handleChangeAlarms(result) ou  !isRefreshUpdate && openShowLoader()
+    "oxc/const-comparisons": "off", //todo revisar
+    "unicorn/no-useless-spread": "off", //todo revisar
+    "typescript/no-duplicate-enum-values": "off" //todo revisar
+  },
+  //https://oxc.rs/docs/guide/usage/linter/ignore-files.html
+  "ignorePatterns": [
+    "scripts/**",
+    "src/assets/**",
+    "public/**",
+    "pnpm-lock.yaml",
+    "api-source-dont-use-it.d.ts",
+    "**/*.test.{ts,tsx,js,jsx}"
+  ]
+}
