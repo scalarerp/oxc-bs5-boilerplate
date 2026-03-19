@@ -1,5 +1,11 @@
+import GridRiskForm from './GridRiskForm'
+
 const App = () => {
-  return <h1>a</h1>
+  return (
+    <div>
+      <GridRiskForm />
+    </div>
+  )
 }
 
 export default App
