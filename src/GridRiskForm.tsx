@@ -4,10 +4,11 @@ import { calculateGridRisk, GridRiskInputs, GridRiskResult } from './gridRisk'
 
 const GridRiskForm = () => {
   const [inputs, setInputs] = useState<GridRiskInputs>({
-    totalEntries: 2,
-    levelPoints: 100,
+    totalEntries: 4,
+    levelPoints: 250,
     valuePerPoint: 0.2,
     quantityPerEntry: 1,
+    takeProfitMultiplier: 2,
   })
 
   const [result, setResult] = useState<GridRiskResult | null>(null)
@@ -23,6 +24,7 @@ const GridRiskForm = () => {
         levelPoints: Number(inputs.levelPoints),
         valuePerPoint: Number(inputs.valuePerPoint),
         quantityPerEntry: Number(inputs.quantityPerEntry),
+        takeProfitMultiplier: Number(inputs.takeProfitMultiplier) || 2,
       }
 
       const res = calculateGridRisk(validInputs)
@@ -99,6 +101,21 @@ const GridRiskForm = () => {
               />
             </div>
 
+            <div className="d-flex flex-column">
+              <label htmlFor="takeProfitMultiplier">
+                Multiplicador TP (x levelPoints):
+              </label>
+              <input
+                type="number"
+                id="takeProfitMultiplier"
+                name="takeProfitMultiplier"
+                value={inputs.takeProfitMultiplier as number}
+                onChange={handleChange}
+                min="0.01"
+                step="0.01"
+              />
+            </div>
+
             <button
               type="submit"
               style={{ padding: '10px', cursor: 'pointer', marginTop: '10px' }}
@@ -130,6 +147,14 @@ const GridRiskForm = () => {
                 <strong>Valor Total do Stop (Risco Financeiro):</strong> R${' '}
                 {result.totalFinancialRisk.toFixed(2)}
               </p>
+              <p>
+                <strong>
+                  Gains necessários para cobrir o Stop (rodadas TP):
+                </strong>{' '}
+                {Number.isFinite(result.tpRoundsNeededForStop)
+                  ? result.tpRoundsNeededForStop
+                  : '∞'}
+              </p>
 
               <h4>Detalhamento por Entrada:</h4>
               <table className="table">
@@ -140,6 +165,8 @@ const GridRiskForm = () => {
                     <th>Qtd Contratos</th>
                     <th>Pontos Perdidos</th>
                     <th>Prejuízo (R$)</th>
+                    <th>Pontos Gain</th>
+                    <th>Gain (R$)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -150,6 +177,12 @@ const GridRiskForm = () => {
                       <td>{item.contracts}</td>
                       <td>{item.lossPoints}</td>
                       <td>{item.financialLoss.toFixed(2)}</td>
+                      <td>{item.gainPoints ?? '-'} </td>
+                      <td>
+                        {item.gainFinancial
+                          ? item.gainFinancial.toFixed(2)
+                          : '-'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

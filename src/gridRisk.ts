@@ -3,6 +3,7 @@ export interface GridRiskInputs {
   levelPoints: number
   valuePerPoint: number // ex: R$ 0.20 para mini-índice B3
   quantityPerEntry?: number // quantidade de contratos/lotes por entrada (default: 1)
+  takeProfitMultiplier?: number // multiplicador para TP em relação a levelPoints (default: 2)
 }
 
 export interface GridRiskResult {
@@ -10,12 +11,15 @@ export interface GridRiskResult {
   totalRiskPoints: number
   totalFinancialRisk: number // O valor total do stop caso não haja gain
   stopLossDistance: number // Distância do stop em relação à primeira entrada
+  tpRoundsNeededForStop: number // Quantas rodadas de TP (todos os contratos juntos) são necessárias para cobrir o stop
   breakdown: {
     entryNumber: number
     distanceFromFirstEntry: number
     contracts: number
     lossPoints: number
     financialLoss: number
+    gainPoints?: number
+    gainFinancial?: number
   }[]
 }
 
@@ -30,6 +34,7 @@ export function calculateGridRisk(inputs: GridRiskInputs): GridRiskResult {
     levelPoints,
     valuePerPoint,
     quantityPerEntry = 1,
+    takeProfitMultiplier = 2,
   } = inputs
 
   if (!Number.isInteger(totalEntries) || totalEntries <= 0) {
@@ -49,6 +54,7 @@ export function calculateGridRisk(inputs: GridRiskInputs): GridRiskResult {
   let totalRiskPoints = 0
   let totalFinancialRisk = 0
   let totalContracts = 0
+  let totalPotentialGain = 0
 
   const breakdown = []
 
@@ -57,9 +63,13 @@ export function calculateGridRisk(inputs: GridRiskInputs): GridRiskResult {
     const lossPoints = stopLossDistance - entryDistance
     const financialLoss = lossPoints * valuePerPoint * quantityPerEntry
 
+    const gainPoints = takeProfitMultiplier * levelPoints
+    const gainFinancial = gainPoints * valuePerPoint * quantityPerEntry
+
     totalContracts += quantityPerEntry
     totalRiskPoints += lossPoints * quantityPerEntry
     totalFinancialRisk += financialLoss
+    totalPotentialGain += gainFinancial
 
     breakdown.push({
       entryNumber: i + 1,
@@ -67,14 +77,25 @@ export function calculateGridRisk(inputs: GridRiskInputs): GridRiskResult {
       contracts: quantityPerEntry,
       lossPoints,
       financialLoss,
+      gainPoints,
+      gainFinancial,
     })
   }
+
+  // Ganho total por uma rodada completa de TP (todos os contratos juntos)
+  const gainPerTpRound =
+    takeProfitMultiplier * levelPoints * valuePerPoint * totalContracts
+  const tpRoundsNeededForStop =
+    gainPerTpRound > 0
+      ? Math.ceil(totalFinancialRisk / gainPerTpRound)
+      : Infinity
 
   return {
     totalContracts,
     totalRiskPoints,
     totalFinancialRisk,
     stopLossDistance,
+    tpRoundsNeededForStop,
     breakdown,
   }
 }
@@ -83,10 +104,11 @@ export function calculateGridRisk(inputs: GridRiskInputs): GridRiskResult {
 // Exemplo de uso
 // ==========================================
 const myGrid: GridRiskInputs = {
-  totalEntries: 2, // 1 entrada principal + 1 sub-operação
-  levelPoints: 100, // Preço médio ou defesa a cada 100 pontos
+  totalEntries: 4, // 1 entrada principal + 1 sub-operação
+  levelPoints: 250, // Preço médio ou defesa a cada 100 pontos
   valuePerPoint: 0.2, // R$ 0.20 por ponto (ex. Mínicontrato de Índice - WIN)
   quantityPerEntry: 1, // 1 contrato por nível
+  takeProfitMultiplier: 2, // TP a 2x levelPoints
 }
 
 const riskDetails = calculateGridRisk(myGrid)
@@ -101,6 +123,9 @@ console.log(
 )
 console.log(
   `VALOR TOTAL DO STOP (Risco Financeiro): R$ ${riskDetails.totalFinancialRisk.toFixed(2)}`
+)
+console.log(
+  `Gains (rodadas TP) necessários para cobrir o Stop: ${riskDetails.tpRoundsNeededForStop}`
 )
 console.log('\n--- Detalhamento por Entrada ---')
 console.table(riskDetails.breakdown)
